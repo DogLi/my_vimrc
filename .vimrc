@@ -30,14 +30,17 @@ language messages zh_CN.utf-8 "解决console和界面的乱码
 "显示相关{{{1
 "--------------------------------------------------------------------------------------
 "set lines=45 columns=110
-set colorcolumn=100                            "在80行处显示颜色竖条
+set colorcolumn=80   "在80行处显示颜色竖条
+highlight ColorColumn ctermbg=red             "竖条颜色
+"let &colorcolumn="80,".join(range(1000,1999),",")
+"highlight ColorColumn ctermbg=red guibg=orange
 set cmdheight=1
 set guifont=AR\ PL\ UKai\ CN\ 13            "设置字体
 set linespace=2                               "行间距
 set scrolloff=5                               "向上下滚动时,至少显示5行
 set number                                    "显示行号
 "set textwidth=100                             "设置文本宽度为80,对于已经存在的文本,选中后按gq就可以了
-" set nowrap                                      "设置自动折行
+set nowrap                                      "设置自动折行
 set showcmd                                   "显示命令
 "set cursorcolumn
 set cursorline                                "高亮光标行
@@ -118,10 +121,10 @@ set cscopequickfix=s-,c-,d-,i-,t-,e-
 "--------------------------------------------------------------------------------------
 "错误自动更改{{{1
 "--------------------------------------------------------------------------------------
-"iabbrev Mymail zsz921130@gmail.com
+"iabbrev Mymail cxwcylf@126.com
 "cabbrev a b "命令模式下将a 映射为b
 "abbreviate a b "所有模式下,将a映射为b
-"另一种方法,将要映射的单词放入一个文件内，然后souce该文件
+"另一种方法,put the fllow lines in a file，然后souce该文件
 abbreviate teh the 
 abbreviate mian main
 abbreviate slef self
@@ -135,9 +138,6 @@ abbreviate Ture True
 "--------------------------------------------------------------------------------------
 "编程相关设置{{{1
 "--------------------------------------------------------------------------------------
-filetype off                                 "文件类型
-filetype plugin on
-filetype indent on
 set autoindent                              "自动换行
 set wildmenu                                "自动补全命令
 set wildignore=*.o,*~,*.pyc,*.class
@@ -160,6 +160,8 @@ set tags=./tags;/,~/.vim/tags path=.,/usr/local/include,/usr/include
     "call append(line(".")+2,"*返回值:  ".expand("%"))
     "call append(line(".")+3,"*其他:  ")
     "call append(line(".")+4,"**********************************************/")
+    "normal 4k
+    "normal A
 "endf
 "map <home> <Esc>:call FuncHead()<CR>
 
@@ -193,7 +195,6 @@ set t_Co=256 "颜色设置
 syntax enable
 
 set background=dark
-let g:airline_powerline_fonts=1
 "colorscheme solarized
 "let g:solarized_termcolors=256
 
@@ -244,12 +245,13 @@ match errorMsg /\(2[5][6-9]\|2[6-9][0-9]\|[3-9][0-9][0-9]\)[.]\[0-9]\{1,3\}[.][0
 "Map{{{1
 let mapleader = ","
 "================== normal mode ======================{{{2
-map <Left> :bn<cr>
-map <Right> :bp<cr>
+map <Left> :tabp<cr>
+map <Right> :tabn<cr>
 "nnoremap <right> gt    "到下一个tabe页
 map <Up> :CtrlP<cr>
 map <Down> :CtrlPBuffer<cr>
 nnoremap <C-F5> :!rs_check<cr> "同步文件到服务器
+nnoremap <C-F6> :!rs_qdisk<cr> "同步文件到服务器
 nnoremap wv <C-w>v     "垂直分割当前窗口
 nnoremap wc <C-w>c     "关闭当前窗口
 nnoremap ws <C-w>s     "水平分割当前窗口
@@ -304,8 +306,8 @@ map <leader>tm :tabm<cr>
 
 
 " 新建tab  Ctrl+t
-nnoremap <C-t>     :tabnew<CR>
-inoremap <C-t>     <Esc>:tabnew<CR>
+"nnoremap <C-t>     :tabnew<CR>
+"inoremap <C-t>     <Esc>:tabnew<CR>
 " TODO: 配置成功这里, 切换更方便, 两个键
  nnoremap <C-S-tab> :tabprevious<CR>
  nnoremap <C-tab>   :tabnext<CR>
@@ -398,7 +400,7 @@ map <leader>9 9gt
 nnoremap <F5> :NERDTreeToggle<CR>
 nnoremap <silent><F6> :TagbarToggle<CR>
 nnoremap <f7> :UndotreeToggle<cr>
-nnoremap <f8> :YRShow<CR>
+"nnoremap <f8> :YRShow<CR>
 "================
  nmap <F9> :SCCompile<cr>
 nnoremap <f3> :lnext<cr>
@@ -430,6 +432,8 @@ nnoremap <silent> <C-F3> :let notabs=!notabs<Bar>:if notabs<Bar>:tabo<Bar>:else<
 "插件相关{{{1
 "--------------------------------------------------------------------------------------
 "Vundle 插件管理软件{{{
+set nocompatible
+filetype off
 set tabstop=2  
 set completeopt=menu  
 "此处规定Vundle的路径
@@ -454,8 +458,8 @@ Bundle 'terryma/vim-expand-region'
 Bundle 'airblade/vim-gitgutter'
 Bundle 'Xuyuanp/git-nerdtree'
 Bundle 'Lokaltog/vim-powerline'
+"Bundle 'powerline/powerline'
 "Bundle 'erikw/tmux-powerline'
-"Plugin 'bling/vim-airline'
 "Bundle 'spiiph/vim-space'
 Bundle 'tpope/vim-surround'
 "Bundle 'godlygeek/tabular'
@@ -463,7 +467,7 @@ Bundle 'vim-scripts/L9'
 Bundle 'vim-scripts/Mark--Karkat'
 "Bundle 'vim-scripts/ZoomWin'
 "Bundle 'vim-scripts/YankRing.vim'
-Bundle 'vim-scripts/EasyGrep'
+Bundle 'dkprice/vim-easygrep'
 Bundle 'mileszs/ack.vim'
 "Easily interact with tmux from vim 
 Bundle 'benmills/vimux' 
@@ -488,9 +492,19 @@ Bundle 'altercation/vim-colors-solarized'
 "Bundle 'tmhedberg/matchit'
 Plugin 'junegunn/vim-easy-align' "对齐
 ""代码片
-Plugin 'SirVer/ultisnips'
-Plugin 'honza/vim-snippets'
+Bundle 'SirVer/ultisnips'
+Bundle 'honza/vim-snippets'
 Plugin 'terryma/vim-multiple-cursors' "多word编辑
+
+Bundle 'sjl/gundo.vim'
+
+" rust
+Bundle 'rust-lang/rust.vim'
+Plugin 'phildawes/racer'
+
+
+filetype indent on
+filetype plugin on
 "}}}
 
 "python{{{
@@ -607,7 +621,6 @@ let g:vimrc_homepage='www.woqutech.com'
 "}}}
 
 "fencview   自动检测文件编码 {{{
-"version 4.8 2012-02-04 id = 1708
 "Tools->Encoding->Auto Detect" or use this command: :FencAutoDetect
 "}}}
 
@@ -619,7 +632,7 @@ let g:vimrc_homepage='www.woqutech.com'
 let g:ctrlp_map = '<leader>p'
 let g:ctrlp_cmd = 'CtrlP'
 map <leader>f :CtrlPMRU<CR>
-"set wildignore+=*/tmp/*,*.so,*.swp,*.zip     " MacOSX/Linux"
+set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.pyc     " MacOSX/Linux"
 let g:ctrlp_custom_ignore = {
     \ 'dir':  '\v[\/]\.(git|hg|svn|rvm)$',
     \ 'file': '\v\.(exe|so|dll|zip|tar|tar.gz)$',
@@ -743,7 +756,7 @@ let g:syntastic_error_symbol = '✗'
 let g:syntax_loc_list_height = 6
 " let g:syntastic_cpp_remove_include_errors = 1  
 " let g:syntastic_cpp_check_header = 1  
-" let g:syntastic_cpp_compiler = 'clang++'  
+let g:syntastic_cpp_compiler = 'clang++'  
 "whether to show balloons  
 let g:syntastic_enable_balloons = 1  
 let g:syntastic_auto_jump = 2
@@ -755,9 +768,9 @@ let g:syntastic_auto_jump = 2
 let g:ycm_collect_identifiers_from_tags_files = 1  
 let g:ycm_seed_identifiers_with_syntax = 0  
 let g:ycm_confirm_extra_conf = 0  
-let g:ycm_error_symbol = '✗'
-let g:ycm_warning_symbol = '>!'  
-"let g:ycm_filetype_specific_completion_to_disable = {'python':1, 'txt':1}
+"let g:ycm_error_symbol = '✗'
+"let g:ycm_warning_symbol = '>!'  
+let g:ycm_filetype_specific_completion_to_disable = {'python':1, 'txt':1}
 let g:ycm_filetype_blacklist = {
     \ 'tagbar' : 1,
     \ 'qf' : 1,
@@ -769,10 +782,66 @@ let g:ycm_filetype_blacklist = {
     \ 'pandoc' : 1,
     \ 'mail' : 1
     \}
+let g:ycm_global_ycm_extra_conf = '~/.vim/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
 nnoremap <leader>gc :YcmCompleter GoToDeclaration<CR>
-nnoremap <leader>gf :YcmCompleter GoToDefinition<CR>
+nnoremap <leader>gd :YcmCompleter GoToDefinition<CR>
 nnoremap <leader>gg :YcmCompleter GoToDefinitionElseDeclaration<CR>
+" ctrl+o : jump back
+" ctrl+i : jump forward
 "}}}
 
+"autopep8{{{
+let g:autopep8_disable_show_diff = 1
+"}}}
+
+" author info{{{
+function HeaderPython()
+    call setline(1, "#!/usr/bin/env python")
+    call append(1, "# -*- coding: utf-8 -*-")
+    normal G
+    normal o
+    normal o
+endf
+
+autocmd bufnewfile *.py call HeaderPython()
+"autocmd BufWritePre,BufRead *.py call AuthorInfoDetect
+"map <leader>au :AuthorInfoDetect<CR>
+"autocmd BufWritePost *.py normal <leader>au
+autocmd Bufnewfile *.py normal <leader>au
+"}}}
+
+" easy grep {{{
+let g:EasyGrepFilesToExclude=".svn,.git"
+" }}}
+
+"rust{{{
+set hidden
+let g:racer_cmd="/usr/local/bin/racer"
+let $RUST_SRC_PATH="/usr/local/src/rust/src/"
+"}}}
+
+"{{{ gundo
+nnoremap <f7> :GundoToggle<CR>
+let g:gundo_width = 60
+let g:gundo_preview_height = 40
+let g:gundo_right = 1
+let g:gundo_width  = 45 "Set the horizontal width of the Gundo graph (and preview).
+let g:gundo_preview_height = 15 "Set the vertical height of the Gundo preview.
+let g:gundo_preview_bottom = 1 "Force the preview window below current windows
+"}}}
+
+"{{{vimux
+nmap <leader>vp :VimuxPromptCommand<cr>
+nmap <leader>vl :VimuxRunLastCommand<cr>
+nmap <leader>vq :VimuxCloseRunner<cr>
+nmap <leader>vx :VimuxInterruptRunner<cr>
+nmap <leader>ls :VimuxRunCommand("ls")<cr>
+
+let g:VimuxHeight = "30"
+let g:VimuxOrientation = 'v'
+let g:VimuxUseNearestPane = 1
+"}}}
+
+
+
 "   vim:foldmethod=marker foldlevel=1 textwidth=100
-"   上传代码到cn服务器
